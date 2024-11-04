@@ -65,7 +65,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     .attr("y", margin.left / 2 - 20)
     .attr("text-anchor", "middle")
     .style("font-weight", "bold")
-    .text("Instant Noodles Consumption in millions of dollars (Log Scale)");
+    .text("Instant Noodle Consumption in millions of dollars (Log Scale)");
 
   // Tooltip
   const tooltip = d3
@@ -277,6 +277,35 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
   );
 
   p.append("p").text(
-    `This indicates a weak negative relationship between happiness scores and instant noodles consumption.`
+    `This indicates a weak negative relationship between happiness scores and instant noodle consumption.`
   );
+
+  // Listen for the custom `highlightCountry` event
+  document.addEventListener("highlightCountry", (e) => {
+    const country = e.detail.country;
+    const currentZoomScale = d3.zoomTransform(d3.select("#jade-svg").node()).k;
+
+    // Increase the radius of the corresponding circle by 5, taking zoom scale into account
+    d3.selectAll(".point")
+      .transition() // Start transition for all points
+      .duration(300) // Set duration of 300ms
+      .attr("opacity", 0.3) // Dim all points
+      .attr("r", 8 / currentZoomScale) // Reset all points to default radius
+      .filter((d) => standardizeCountryName(d.Country) === country) // Select the matching country
+      .transition() // Start another transition for the selected point
+      .duration(300)
+      .attr("opacity", 1)
+      .attr("r", (8 + 5) / currentZoomScale); // Increase radius by 5 (scaled by zoom)
+  });
+
+  // Reset radius and opacity when hover ends
+  document.addEventListener("resetHighlight", () => {
+    const currentZoomScale = d3.zoomTransform(d3.select("#jade-svg").node()).k;
+
+    d3.selectAll(".point")
+      .transition() // Start transition for resetting points
+      .duration(300)
+      .attr("opacity", 0.7) // Reset opacity
+      .attr("r", 8 / currentZoomScale); // Reset radius to default based on zoom
+  });
 });

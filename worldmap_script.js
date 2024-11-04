@@ -130,6 +130,11 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
               .transition() // Start transition
               .duration(500) // Transition duration in ms
               .style("opacity", 1); // Fade-in effect
+
+            // Dispatch an event to highlight the country in the scatter plot
+            document.dispatchEvent(
+              new CustomEvent("highlightCountry", { detail: { country } })
+            );
           }
           function hideTooltip() {
             tooltip
@@ -137,6 +142,8 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
               .duration(500) // Transition duration in ms
               .style("opacity", 0) // Fade-out effect
               .on("end", () => tooltip.style("display", "none")); // Hide after fade-out
+            // Dispatch event to reset scatter plot highlights
+            document.dispatchEvent(new CustomEvent("resetHighlight"));
           }
 
           // Assign consumption bubble to countries
