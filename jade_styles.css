@@ -1,0 +1,72 @@
+.gridlines line {
+  stroke: #bbb;
+}
+
+.gridlines .domain {
+  stroke: none;
+}
+
+* {
+  font-family: sans-serif;
+}
+
+svg {
+  margin: 0 auto;
+}
+
+p {
+  text-align: center;
+}
+
+#jade-div {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  flex-direction: column;
+  max-width: 1200px; /* Set a max width for the div */
+}
+
+.tooltip {
+  position: absolute;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 4px;
+  pointer-events: none;
+  font-size: 14px;
+}
+
+.legend {
+  font-size: 14px;
+}
+
+.legend-button {
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #fff;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.legend-button:hover {
+  background-color: rgb(231, 231, 231);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s;
+}
+
+.legend-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 68, 255, 0.3);
+}
+
+.legend-button-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.correlation-coefficient {
+  margin: 0;
+}
