@@ -155,7 +155,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
         tooltip.transition().duration(300).style("opacity", 0.9);
         tooltip
           .html(
-            `<b>Country:</b> ${d.Country}  <br> <b>Instant Noodle Consumption:</b> $ ${d["2022_consumption"]} million <br> <b>Happiness Score:</b> ${d["happiness_score"]}`
+            `<b>Country:</b> ${d.Country}  <br> <b>Instant Noodle Consumption:</b> $${d["2022_consumption"]} million <br> <b>Happiness Score:</b> ${d["happiness_score"]}`
           )
           .style("left", event.pageX + 20 + "px")
           .style("top", event.pageY - 28 + "px");
@@ -300,16 +300,5 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
       .duration(300)
       .attr("opacity", 1)
       .attr("r", (8 + 5) / currentZoomScale); // Increase radius by 5 (scaled by zoom)
-  });
-
-  // Reset radius and opacity when hover ends
-  document.addEventListener("resetHighlight", () => {
-    const currentZoomScale = d3.zoomTransform(d3.select("#jade-svg").node()).k;
-
-    d3.selectAll(".point")
-      .transition() // Start transition for resetting points
-      .duration(300)
-      .attr("opacity", 0.7) // Reset opacity
-      .attr("r", 8 / currentZoomScale); // Reset radius to default based on zoom
   });
 });
