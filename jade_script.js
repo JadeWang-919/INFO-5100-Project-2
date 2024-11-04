@@ -132,6 +132,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
   updateTrendLine(xScale, yScale);
 
   let selectedContinent = null;
+  let selectedCountry = null;
 
   // Plot data points
   let viewport = chartArea.append("g");
@@ -222,6 +223,8 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     .style("color", (d) => colorScale(d))
     .text((d) => d)
     .on("click", function (event, continent) {
+      // Reset the selected country when a continent filter is clicked
+      selectedCountry = null;
       selectedContinent = continent;
       d3.selectAll(".point").attr("opacity", (d) =>
         d.Continent === continent ? 0.7 : 0.07
@@ -236,6 +239,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     .style("color", "black")
     .text("Show All")
     .on("click", () => {
+      selectedCountry = null;
       selectedContinent = null;
       d3.selectAll(".point").attr("opacity", 0.7);
     });
@@ -291,7 +295,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
       .duration(300) // Set duration of 300ms
       .attr("opacity", 0.3) // Dim all points
       .attr("r", 8 / currentZoomScale) // Reset all points to default radius
-      .filter((d) => standardizeCountryName(d.Country) === country) // Select the matching country
+      .filter((d) => d.Country.toLowerCase() === country) // Select the matching country
       .transition() // Start another transition for the selected point
       .duration(300)
       .attr("opacity", 1)

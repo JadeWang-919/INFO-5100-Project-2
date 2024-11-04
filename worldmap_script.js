@@ -130,11 +130,6 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
               .transition() // Start transition
               .duration(500) // Transition duration in ms
               .style("opacity", 1); // Fade-in effect
-
-            // Dispatch an event to highlight the country in the scatter plot
-            document.dispatchEvent(
-              new CustomEvent("highlightCountry", { detail: { country } })
-            );
           }
           function hideTooltip() {
             tooltip
@@ -142,8 +137,6 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
               .duration(500) // Transition duration in ms
               .style("opacity", 0) // Fade-out effect
               .on("end", () => tooltip.style("display", "none")); // Hide after fade-out
-            // Dispatch event to reset scatter plot highlights
-            document.dispatchEvent(new CustomEvent("resetHighlight"));
           }
 
           // Assign consumption bubble to countries
@@ -179,7 +172,16 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
 
             // Set interactions
             .on("mouseover", (event, d) => showTooltip(event, d))
-            .on("mouseout", hideTooltip);
+            .on("mouseout", hideTooltip)
+            .on("click", (event, d) => {
+              // Standardize country name for matching
+              const country = standardizeCountryName(d.properties.name);
+
+              // Dispatch custom event with the selected country
+              document.dispatchEvent(
+                new CustomEvent("highlightCountry", { detail: { country } })
+              );
+            });
 
           // Zoom controls
           d3.select("#zoomIn").on("click", () =>
