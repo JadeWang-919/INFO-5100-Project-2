@@ -7,7 +7,7 @@
 }
 
 * {
-  font-family: sans-serif;
+  font-family: Trebuchet MS, sans-serif;
 }
 
 svg {
@@ -16,6 +16,7 @@ svg {
 
 p {
   text-align: center;
+  font-size: 14px;
 }
 
 #jade-div {
@@ -26,10 +27,10 @@ p {
   max-width: 1200px; /* Set a max width for the div */
 }
 
-.tooltip {
+.tooltip-jade {
   position: absolute;
   padding: 8px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.8);
   color: white;
   border-radius: 4px;
   pointer-events: none;

@@ -1,0 +1,108 @@
+.title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  /* background: linear-gradient(90deg, #F9F65A, #EC7014, #BC4A9C, #7A1A9B, #4A1486); */
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.tooltip {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px;
+  position: absolute;
+  border-radius: 4px;
+  font-size: 14px;
+  pointer-events: none;
+  display: none;
+  text-align: left;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 10px; /* Space between map and buttons */
+}
+
+.zoom-button {
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #fff;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.zoom-button:hover {
+  background-color: rgb(231, 231, 231);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s;
+}
+
+.zoom-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 68, 255, 0.3);
+}
+
+.worldmap {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Centered legend container */
+.legend-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #333;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.color-legend {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  display: inline-block;
+}
+
+.circle-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.circle-example {
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.65;
+  background-color: black;
+}
+
+.circle-small {
+  width: 10px;
+  height: 10px;
+}
+
+.circle-large {
+  width: 25px;
+  height: 25px;
+}

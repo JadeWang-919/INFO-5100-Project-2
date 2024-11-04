@@ -3,16 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Happiness vs Noodle Consumption</title>
+    <title>Happiness vs Instant Noodles</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <link rel="stylesheet" href="worldmap_styles.css" />
     <link rel="stylesheet" href="jade_styles.css" />
   </head>
   <body>
+    <div class="title">
+      Wish the Instant Noodles Bring More Happiness to the World 🍜
+    </div>
+    <!------------- THE WORLD MAP ------------->
+    <div class="worldmap">
+      <svg id="worldMap" width="1000" height="500"></svg>
+      <div id="tooltip" class="tooltip"></div>
+    </div>
+
+    <!-- three buttons -->
+    <div class="button-container">
+      <button class="zoom-button" id="zoomIn">Zoom In</button>
+      <button class="zoom-button" id="zoomOut">Zoom Out</button>
+      <button class="zoom-button" id="reset">Reset View</button>
+    </div>
+
+    <!-- Two legends -->
+    <div class="legend-container">
+      <!-- explain colors -->
+      <div class="legend">
+        <div>Happiness Score:</div>
+        <span>Low</span>
+        <div class="color-legend">
+          <div class="color-box" style="background-color: #f9f65a"></div>
+          <div class="color-box" style="background-color: #ec7014"></div>
+          <div class="color-box" style="background-color: #bc4a9c"></div>
+          <div class="color-box" style="background-color: #7a1a9b"></div>
+          <div class="color-box" style="background-color: #2b0054"></div>
+        </div>
+        <span>High</span>
+      </div>
+      <!-- explain size  -->
+      <div class="legend">
+        <div>Noodle Consumption:</div>
+        <div class="circle-legend">
+          <div class="circle-example circle-small"></div>
+          <span>Low</span>
+          <div class="circle-example circle-large"></div>
+          <span>High</span>
+        </div>
+      </div>
+    </div>
+
     <div id="jade-div">
       <svg width="1000" height="700" id="jade-svg"></svg>
       <p></p>
     </div>
 
+    <script src="worldmap_script.js"></script>
     <script src="jade_script.js"></script>
   </body>
 </html>

@@ -71,7 +71,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
   const tooltip = d3
     .select("#jade-div")
     .append("div")
-    .attr("class", "tooltip")
+    .attr("class", "tooltip-jade")
     .style("opacity", 0);
 
   // Draw the trend line
@@ -154,7 +154,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
         tooltip.transition().duration(300).style("opacity", 0.9);
         tooltip
           .html(
-            `Country: ${d.Country} <br> Happiness Score: ${d["happiness_score"]} <br> Instant Noodles Consumption: $ ${d["2022_consumption"]} million`
+            `<b>Country:</b> ${d.Country}  <br> <b>Instant Noodle Consumption:</b> $ ${d["2022_consumption"]} million <br> <b>Happiness Score:</b> ${d["happiness_score"]}`
           )
           .style("left", event.pageX + 20 + "px")
           .style("top", event.pageY - 28 + "px");
