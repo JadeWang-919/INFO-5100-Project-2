@@ -2,7 +2,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
   const svg = d3.select("#jade-svg");
   const width = svg.attr("width");
   const height = svg.attr("height");
-  const margin = { top: 40, right: 5, bottom: 80, left: 100 };
+  const margin = { top: 0, right: 5, bottom: 80, left: 60 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -40,7 +40,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
   svg
     .append("text")
     .attr("x", margin.left + chartWidth / 2)
-    .attr("y", chartHeight + margin.bottom + 20)
+    .attr("y", chartHeight + 60)
     .attr("text-anchor", "middle")
     .style("font-weight", "bold")
     .text("Happiness Score");
@@ -171,7 +171,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
       }
     });
 
-  var chartZoom = d3.zoom().on("zoom", chartZoomed);
+  var chartZoom = d3.zoom().scaleExtent([0.5, 5]).on("zoom", chartZoomed);
   svg.call(chartZoom);
   function chartZoomed(event) {
     viewport.attr("transform", event.transform);
@@ -194,6 +194,12 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     // Update the trend line with the new scales
     updateTrendLine(new_xScale, new_yScale);
   }
+
+  function resetZoom() {
+    svg.transition().call(chartZoom.transform, d3.zoomIdentity); // Use `chartZoom` directly to reset zoom
+  }
+
+  document.getElementById("reset-view").addEventListener("click", resetZoom);
 
   svg
     .append("defs")

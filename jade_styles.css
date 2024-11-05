@@ -25,6 +25,22 @@ p {
   margin: auto;
   flex-direction: column;
   max-width: 1200px; /* Set a max width for the div */
+  align-items: center;
+}
+
+.title-container {
+  display: flex;
+  align-items: center; /* Align items vertically centered */
+  justify-content: space-between; /* Space items out to opposite ends if needed */
+  margin-bottom: 20px;
+}
+
+.title-container h2 {
+  margin: 0; /* Remove default margin */
+}
+
+.title-container button {
+  margin-left: 10px; /* Optional: spacing between the title and button */
 }
 
 .tooltip-jade {
