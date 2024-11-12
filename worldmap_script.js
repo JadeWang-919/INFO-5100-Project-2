@@ -45,7 +45,7 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
     consumptionData[standardizedCountry] = d["2022"] * 1;
   });
 
-  // Load noodle ratinbgs data and store it
+  // Load noodle ratings data and store it
   d3.csv("noodles_ratings.csv").then((ratingData) => {
     ratingData.forEach((d) => {
       const standardizedCountry = standardizeCountryName(d.Country);
@@ -90,27 +90,27 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
           // In order to get the max value easier from the data storage, we learned Object.values() from MDN
           // reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
           var maxConsumption = d3.max(Object.values(consumptionData));
-          var bubbleScale = d3
+          let bubbleScale = d3
             .scaleSqrt()
             .domain([0, maxConsumption])
             .range([0, 60]);
 
           // Color scale range for happiness score
           // same reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
-          const happinessScores = Object.values(happinessByCountry);
-          const colorScale = d3
+          var happinessScores = Object.values(happinessByCountry);
+          let colorScale = d3
             .scaleQuantile()
             .domain(happinessScores)
             .range(["#F9F65A", "#EC7014", "#BC4A9C", "#7A1A9B", "#2B0054"]);
 
           // on hover
           function showTooltip(event, countryData) {
-            const country = standardizeCountryName(countryData.properties.name);
+            let country = standardizeCountryName(countryData.properties.name);
             let tooltipContent = `<strong>Country:</strong> ${countryData.properties.name}<br>`;
 
             // Check if each piece of data exists and add it to the tooltip content if it does
             if (consumptionData[country]) {
-              const consumption = `$${consumptionData[country]} million`;
+              let consumption = `$${consumptionData[country]} million`;
               tooltipContent += `<strong>Instant Noodle Consumption:</strong> ${consumption}<br>`;
             }
 
@@ -131,12 +131,18 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
               .duration(500) // Transition duration in ms
               .style("opacity", 1); // Fade-in effect
           }
+          
           function hideTooltip() {
             tooltip
               .transition() // Start transition
               .duration(500) // Transition duration in ms
               .style("opacity", 0) // Fade-out effect
               .on("end", () => tooltip.style("display", "none")); // Hide after fade-out
+          }
+
+          // Define the highlightCountry function
+          function highlightCountry(country) {
+            console.log("Country highlighted:", country);
           }
 
           // Assign consumption bubble to countries
@@ -176,11 +182,7 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
             .on("click", (event, d) => {
               // Standardize country name for matching
               const country = standardizeCountryName(d.properties.name);
-
-              // Dispatch custom event with the selected country
-              document.dispatchEvent(
-                new CustomEvent("highlightCountry", { detail: { country } })
-              );
+              highlightCountry(country);
             });
 
           // Zoom controls
