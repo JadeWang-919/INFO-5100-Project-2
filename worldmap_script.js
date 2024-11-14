@@ -140,11 +140,6 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
               .on("end", () => tooltip.style("display", "none")); // Hide after fade-out
           }
 
-          // Define the highlightCountry function
-          function highlightCountry(country) {
-            console.log("Country highlighted:", country);
-          }
-
           // Assign consumption bubble to countries
           mapGroup
             .selectAll("circle")
@@ -179,11 +174,7 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
             // Set interactions
             .on("mouseover", (event, d) => showTooltip(event, d))
             .on("mouseout", hideTooltip)
-            .on("click", (event, d) => {
-              // Standardize country name for matching
-              const country = standardizeCountryName(d.properties.name);
-              highlightCountry(country);
-            });
+        
 
           // Zoom controls
           d3.select("#zoomIn").on("click", () =>
