@@ -26,6 +26,14 @@
   margin-top: 10px; /* Space between map and buttons */
 }
 
+.explanation-text {
+  text-align: center;
+  font-size: 10px;
+  color: rgb(136, 134, 134);
+  margin-top: 20px; /* Adds spacing below the buttons */
+  font-style: italic; /* Emphasizes the text style */
+}
+
 .zoom-button {
   padding: 8px 12px;
   margin: 5px;
@@ -106,3 +114,5 @@
   width: 25px;
   height: 25px;
 }
+
+
