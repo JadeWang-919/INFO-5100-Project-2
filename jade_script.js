@@ -126,9 +126,6 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
 
   const trendBtn = d3.select("#show-trend");
 
-  const trendLineOpacity = parseFloat(trendLine.style("opacity"));
-  trendBtn.text(trendLineOpacity === 0 ? "Show Trend Line" : "Hide Trend Line");
-
   trendBtn.on("click", () => {
     // Get the current opacity as a number
     const trendLineOpacity = parseFloat(trendLine.style("opacity"));
@@ -136,6 +133,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     trendLine.style("opacity", trendLineOpacity === 0 ? 1 : 0);
 
     trendBtn.text(
+      // if trendLineOpacity was 1, now it should be 0, so we display show trend line
       trendLineOpacity === 1 ? "Show Trend Line" : "Hide Trend Line"
     );
   });
