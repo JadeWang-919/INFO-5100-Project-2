@@ -63,7 +63,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     .append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -margin.top - chartHeight / 2)
-    .attr("y", margin.left / 2 - 20)
+    .attr("y", margin.left / 2 - 10)
     .attr("text-anchor", "middle")
     .style("font-weight", "bold")
     .style("font-size", "13px")
@@ -94,21 +94,12 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
       ) /
       d3.sum(data, (d) => Math.pow(d["happiness_score"] - meanHappiness, 2));
 
-    // Calculate the intercept of the trend line
     const intercept = meanLogConsumption - slope * meanHappiness;
 
-    return { slope, intercept }; // Return both slope and intercept for use
+    return { slope, intercept };
   }
 
   const { slope, intercept } = linearRegression(data);
-
-  // Determine the start and end points for the trend line
-  const startHappiness = d3.min(data, (d) => d["happiness_score"]);
-  const endHappiness = d3.max(data, (d) => d["happiness_score"]);
-
-  // Calculate corresponding y-values using the inverse of the logarithmic scale
-  const startConsumption = Math.exp(intercept + slope * startHappiness); // Convert back from log scale
-  const endConsumption = Math.exp(intercept + slope * endHappiness); // Convert back from log scale
 
   // Draw the trend line on the chart
   const trendLine = chartArea
@@ -133,6 +124,44 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
 
   updateTrendLine(xScale, yScale);
 
+  // Function to compute the correlation coefficient
+  function correlationCoefficient(data) {
+    const meanHappiness = d3.mean(data, (d) => d["happiness_score"]);
+    const meanLogConsumption = d3.mean(data, (d) =>
+      Math.log(d["2022_consumption"])
+    ); // Calculate mean of log consumption
+
+    const numerator = d3.sum(
+      data,
+      (d) =>
+        (d["happiness_score"] - meanHappiness) *
+        (Math.log(d["2022_consumption"]) - meanLogConsumption)
+    );
+
+    const denominator = Math.sqrt(
+      d3.sum(data, (d) => Math.pow(d["happiness_score"] - meanHappiness, 2)) *
+        d3.sum(data, (d) =>
+          Math.pow(Math.log(d["2022_consumption"]) - meanLogConsumption, 2)
+        )
+    );
+
+    return numerator / denominator; // Return the calculated correlation coefficient
+  }
+
+  const r = correlationCoefficient(data);
+
+  const p = d3.select("p").attr("class", "correlation-coefficient");
+
+  p.append("p").text(
+    `Correlation Coefficient: ${r.toFixed(
+      2
+    )} (based on log-transformed Y values).`
+  );
+
+  p.append("p").text(
+    `This indicates a weak negative relationship between happiness scores and instant noodle consumption.`
+  );
+
   let selectedContinent = null;
   let selectedCountry = null;
 
@@ -145,8 +174,8 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     .attr("class", "point")
     .attr("cx", (d) => xScale(d["happiness_score"]))
     .attr("cy", (d) => yScale(d["2022_consumption"]))
-    .attr("r", 8)
-    .attr("opacity", 0.7)
+    .attr("r", 6)
+    .attr("opacity", 0.6)
     .style("fill", (d) => colorScale(d.Continent))
     .on("mouseover", (event, d) => {
       if (!selectedContinent || d.Continent === selectedContinent) {
@@ -168,11 +197,12 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
         d3.select(event.currentTarget)
           .transition()
           .duration(300)
-          .attr("opacity", 0.7);
+          .attr("opacity", 0.6);
         tooltip.transition().duration(500).style("opacity", 0);
       }
     });
 
+  // Handle Zooming
   var chartZoom = d3.zoom().scaleExtent([0.5, 5]).on("zoom", chartZoomed);
   svg.call(chartZoom);
   function chartZoomed(event) {
@@ -191,14 +221,14 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     d3.select("g.x.gridlines").call(xGridlines);
     d3.select("g.y.gridlines").call(yGridlines);
 
-    viewport.selectAll("circle").attr("r", 8 / event.transform.k);
+    viewport.selectAll("circle").attr("r", 6 / event.transform.k);
 
     // Update the trend line with the new scales
     updateTrendLine(new_xScale, new_yScale);
   }
 
   function resetZoom() {
-    svg.transition().call(chartZoom.transform, d3.zoomIdentity); // Use `chartZoom` directly to reset zoom
+    svg.transition().call(chartZoom.transform, d3.zoomIdentity);
   }
 
   document.getElementById("reset-view").addEventListener("click", resetZoom);
@@ -234,9 +264,10 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
       // Reset the selected country when a continent filter is clicked
       selectedCountry = null;
       selectedContinent = continent;
-      d3.selectAll(".point").attr("opacity", (d) =>
-        d.Continent === continent ? 0.7 : 0.07
-      );
+      d3.selectAll(".point")
+        .transition()
+        .duration(200)
+        .attr("opacity", (d) => (d.Continent === continent ? 0.6 : 0.07));
     });
 
   // Reset filter with "Show All" button
@@ -249,64 +280,30 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     .on("click", () => {
       selectedCountry = null;
       selectedContinent = null;
-      d3.selectAll(".point").attr("opacity", 0.7);
+      const currentZoomScale = d3.zoomTransform(
+        d3.select("#jade-svg").node()
+      ).k;
+      d3.selectAll(".point")
+        .transition()
+        .duration(300)
+        .attr("opacity", 0.6)
+        .attr("r", 6 / currentZoomScale);
     });
 
-  // Function to compute the correlation coefficient
-  function correlationCoefficient(data) {
-    const n = data.length;
-    const meanHappiness = d3.mean(data, (d) => d["happiness_score"]);
-    const meanLogConsumption = d3.mean(data, (d) =>
-      Math.log(d["2022_consumption"])
-    ); // Calculate mean of log consumption
-
-    const numerator = d3.sum(
-      data,
-      (d) =>
-        (d["happiness_score"] - meanHappiness) *
-        (Math.log(d["2022_consumption"]) - meanLogConsumption)
-    );
-
-    const denominator = Math.sqrt(
-      d3.sum(data, (d) => Math.pow(d["happiness_score"] - meanHappiness, 2)) *
-        d3.sum(data, (d) =>
-          Math.pow(Math.log(d["2022_consumption"]) - meanLogConsumption, 2)
-        )
-    );
-
-    return numerator / denominator; // Return the calculated correlation coefficient
-  }
-
-  // Calculate and log the correlation coefficient
-  const r = correlationCoefficient(data);
-
-  const p = d3.select("p").attr("class", "correlation-coefficient");
-
-  p.append("p").text(
-    `Correlation Coefficient: ${r.toFixed(
-      2
-    )} (based on log-transformed Y values).`
-  );
-
-  p.append("p").text(
-    `This indicates a weak negative relationship between happiness scores and instant noodle consumption.`
-  );
-
-  // Listen for the custom `highlightCountry` event
+  // Highlight selected country from the world map
   document.addEventListener("highlightCountry", (e) => {
     const country = e.detail.country;
     const currentZoomScale = d3.zoomTransform(d3.select("#jade-svg").node()).k;
-
     // Increase the radius of the corresponding circle by 5, taking zoom scale into account
     d3.selectAll(".point")
-      .transition() // Start transition for all points
-      .duration(300) // Set duration of 300ms
-      .attr("opacity", 0.3) // Dim all points
-      .attr("r", 8 / currentZoomScale) // Reset all points to default radius
+      .transition()
+      .duration(300)
+      .attr("opacity", 0.07)
+      .attr("r", 6 / currentZoomScale) // Reset all points to default radius
       .filter((d) => d.Country.toLowerCase() === country) // Select the matching country
-      .transition() // Start another transition for the selected point
+      .transition()
       .duration(300)
       .attr("opacity", 1)
-      .attr("r", (8 + 5) / currentZoomScale); // Increase radius by 5 (scaled by zoom)
+      .attr("r", 10 / currentZoomScale);
   });
 });
