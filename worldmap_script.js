@@ -179,11 +179,12 @@ d3.csv("noodles_consumptions.csv").then((noodleData) => {
               const country = standardizeCountryName(d.properties.name);
 
               // Dispatch custom event with the selected country
+              // Responsible for sync interaction with Jade's map 
               document.dispatchEvent(
                 new CustomEvent("highlightCountry", { detail: { country } })
               );
             });
-        
+
 
           // Zoom controls
           d3.select("#zoomIn").on("click", () =>
