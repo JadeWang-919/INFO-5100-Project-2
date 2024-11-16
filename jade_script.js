@@ -2,7 +2,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
   const svg = d3.select("#jade-svg");
   const width = svg.attr("width");
   const height = svg.attr("height");
-  const margin = { top: 0, right: 5, bottom: 80, left: 60 };
+  const margin = { top: 0, right: 5, bottom: 60, left: 60 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -40,9 +40,10 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
   svg
     .append("text")
     .attr("x", margin.left + chartWidth / 2)
-    .attr("y", chartHeight + 60)
+    .attr("y", chartHeight + 50)
     .attr("text-anchor", "middle")
     .style("font-weight", "bold")
+    .style("font-size", "13px")
     .text("Happiness Score");
 
   let yAxis = d3.axisLeft(yScale);
@@ -65,6 +66,7 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     .attr("y", margin.left / 2 - 20)
     .attr("text-anchor", "middle")
     .style("font-weight", "bold")
+    .style("font-size", "13px")
     .text("Instant Noodle Consumption in millions of dollars (Log Scale)");
 
   // Tooltip
