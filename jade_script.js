@@ -124,6 +124,22 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
 
   updateTrendLine(xScale, yScale);
 
+  const trendBtn = d3.select("#show-trend");
+
+  const trendLineOpacity = parseFloat(trendLine.style("opacity"));
+  trendBtn.text(trendLineOpacity === 0 ? "Show Trend Line" : "Hide Trend Line");
+
+  trendBtn.on("click", () => {
+    // Get the current opacity as a number
+    const trendLineOpacity = parseFloat(trendLine.style("opacity"));
+
+    trendLine.style("opacity", trendLineOpacity === 0 ? 1 : 0);
+
+    trendBtn.text(
+      trendLineOpacity === 1 ? "Show Trend Line" : "Hide Trend Line"
+    );
+  });
+
   // Function to compute the correlation coefficient
   function correlationCoefficient(data) {
     const meanHappiness = d3.mean(data, (d) => d["happiness_score"]);
@@ -150,20 +166,23 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
 
   const r = correlationCoefficient(data);
 
-  const p = d3.select("p").attr("class", "correlation-coefficient");
+  const corrBigDiv = d3.select(".correlation-coefficient");
+  const corrDiv = d3.select(".correlation-div");
 
-  p.append("p").text(
-    `Correlation Coefficient: ${r.toFixed(
-      2
-    )} (based on log-transformed Y values).`
-  );
+  corrDiv
+    .append("p")
+    .text(
+      `Correlation Coefficient: ${r.toFixed(
+        2
+      )} (based on log-transformed Y values).`
+    );
+  console.log("corrDiv:", corrDiv);
 
-  p.append("p").text(
-    `This indicates a weak negative relationship between happiness scores and instant noodle consumption.`
-  );
-
-  let selectedContinent = null;
-  let selectedCountry = null;
+  corrBigDiv
+    .append("p")
+    .text(
+      `This indicates a weak negative relationship between happiness scores and instant noodle consumption.`
+    );
 
   // Handle Zooming
   var chartZoom = d3.zoom().scaleExtent([0.5, 5]).on("zoom", chartZoomed);
@@ -208,6 +227,9 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
 
   chartArea.attr("clip-path", "url(#clip)");
 
+  let selectedContinent = null;
+  let selectedCountry = null;
+
   // Legend Buttons
   const uniqueContinents = Array.from(new Set(data.map((d) => d.Continent)));
   const buttonContainer = d3
@@ -224,12 +246,16 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     .style("color", (d) => colorScale(d))
     .text((d) => d)
     .on("click", function (event, continent) {
+      const currentZoomScale = d3.zoomTransform(
+        d3.select("#jade-svg").node()
+      ).k;
       // Reset the selected country when a continent filter is clicked
       selectedCountry = null;
       selectedContinent = continent;
       d3.selectAll(".point")
         .transition()
         .duration(200)
+        .attr("r", 6 / currentZoomScale)
         .attr("opacity", (d) => (d.Continent === continent ? 0.6 : 0.07));
     });
 
@@ -253,11 +279,21 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
         .attr("r", 6 / currentZoomScale);
     });
 
-  // Variable to keep track of the highlighted country
-  let highlightedCountry = null;
-
   // Plot data points
   let viewport = chartArea.append("g");
+
+  function computeOpacity(d) {
+    if (selectedCountry) {
+      return d.Country.toLowerCase().replace(/\s+/g, "") === selectedCountry
+        ? 1
+        : 0.07;
+    } else if (selectedContinent) {
+      return d.Continent === selectedContinent ? 0.6 : 0.07;
+    } else {
+      return 0.6;
+    }
+  }
+
   viewport
     .selectAll("circle")
     .data(data)
@@ -269,58 +305,38 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
     .attr("opacity", 0.6)
     .style("fill", (d) => colorScale(d.Continent))
     .on("mouseover", (event, d) => {
-      if (!selectedContinent || d.Continent === selectedContinent) {
-        // Check if a country is highlighted
-        if (highlightedCountry) {
-          d3.select(event.currentTarget)
-            .transition()
-            .duration(200)
-            .attr("opacity", 1);
-        }
-        tooltip.transition().duration(300).style("opacity", 0.9);
-        tooltip
-          .html(
-            `<b>Country:</b> ${d.Country}  <br> <b>Instant Noodle Consumption:</b> $${d["2022_consumption"]} million <br> <b>Happiness Score:</b> ${d["happiness_score"]}`
-          )
-          .style("left", event.pageX + 20 + "px")
-          .style("top", event.pageY - 28 + "px");
-      }
+      d3.select(event.currentTarget)
+        .transition()
+        .duration(200)
+        .attr("opacity", 1);
+      tooltip.transition().duration(300).style("opacity", 0.9);
+      tooltip
+        .html(
+          `<b>Country:</b> ${d.Country}  <br> <b>Instant Noodle Consumption:</b> $${d["2022_consumption"]} million <br> <b>Happiness Score:</b> ${d["happiness_score"]}`
+        )
+        .style("left", event.pageX + 20 + "px")
+        .style("top", event.pageY - 28 + "px");
     })
     .on("mouseout", (event, d) => {
-      if (!selectedContinent || d.Continent === selectedContinent) {
-        // Only change opacity if no country is currently highlighted
-        if (!highlightedCountry) {
-          d3.select(event.currentTarget)
-            .transition()
-            .duration(300)
-            .attr("opacity", 0.6);
-        } else {
-          d3.select(event.currentTarget)
-            .transition()
-            .duration(300)
-            .attr("opacity", d.Country === highlightedCountry ? 1 : 0.07);
-        }
-        tooltip.transition().duration(500).style("opacity", 0);
-      }
+      d3.select(event.currentTarget)
+        .transition()
+        .duration(300)
+        .attr("opacity", computeOpacity(d));
+      tooltip.transition().duration(500).style("opacity", 0);
     });
 
-  // Adjust the highlighted country behavior
   document.addEventListener("highlightCountry", (e) => {
-    const country = e.detail.country;
+    const country = e.detail.country.toLowerCase().replace(/\s+/g, "");
+    selectedCountry = country;
+
     const currentZoomScale = d3.zoomTransform(d3.select("#jade-svg").node()).k;
 
-    // Set the highlighted country
-    highlightedCountry = country;
-
-    // Update opacity of all points based on highlighted country
     d3.selectAll(".point")
       .transition()
       .duration(300)
-      .attr("opacity", (d) =>
-        d.Country.toLowerCase().replace(/\s+/g, "") === country ? 1 : 0.07
-      )
+      .attr("opacity", (d) => computeOpacity(d))
       .attr("r", (d) =>
-        d.Country.toLowerCase().replace(/\s+/g, "") === country
+        d.Country.toLowerCase().replace(/\s+/g, "") === selectedCountry
           ? 10 / currentZoomScale
           : 6 / currentZoomScale
       );

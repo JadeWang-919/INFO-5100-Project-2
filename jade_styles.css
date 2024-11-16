@@ -57,6 +57,10 @@ svg {
   font-size: 12px;
 }
 
+#show-trend {
+  font-size: 10px;
+}
+
 .legend-button:hover {
   background-color: rgb(231, 231, 231);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
@@ -78,6 +82,15 @@ svg {
   margin: 0;
   font-size: 12px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.correlation-div {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
 }
 
 /* place the scatterplot and bar chart in one row */

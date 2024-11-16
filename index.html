@@ -22,7 +22,9 @@
 
     <!-- Explanation Text -->
     <div class="explanation-text">
-      *happiness score -- a national average of the responses to the main life evaluation question asked in the Gallup World Poll (GWP), which uses the Cantril Ladder.
+      *happiness score -- a national average of the responses to the main life
+      evaluation question asked in the Gallup World Poll (GWP), which uses the
+      Cantril Ladder.
     </div>
 
     <!-- three buttons --->
@@ -66,8 +68,13 @@
           <button id="reset-view" class="legend-button">Reset Zoom</button>
         </div>
         <svg width="600" height="500" id="jade-svg"></svg>
-
-        <p></p>
+        <div class="correlation-coefficient">
+          <div class="correlation-div">
+            <button id="show-trend" class="legend-button">
+              Hide Trend Line
+            </button>
+          </div>
+        </div>
       </div>
 
       <div id="bar-chart-container">
@@ -75,7 +82,7 @@
           <h3>Top Instant Noodle Brands by Country</h3>
           <select id="country-filter"></select>
         </div>
-      
+
         <!-- Bar Chart SVG -->
         <svg id="bar-chart" width="600" height="500"></svg>
 
@@ -91,10 +98,9 @@
             <div class="color-box" style="background-color: #08519c"></div>
           </div>
           <span>5'</span>
-        </div>        
+        </div>
       </div>
-      
-    
+    </div>
 
     <!-- 
     <div id="side-panel" style="display: none">
