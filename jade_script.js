@@ -165,43 +165,6 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
   let selectedContinent = null;
   let selectedCountry = null;
 
-  // Plot data points
-  let viewport = chartArea.append("g");
-  viewport
-    .selectAll("circle")
-    .data(data)
-    .join("circle")
-    .attr("class", "point")
-    .attr("cx", (d) => xScale(d["happiness_score"]))
-    .attr("cy", (d) => yScale(d["2022_consumption"]))
-    .attr("r", 6)
-    .attr("opacity", 0.6)
-    .style("fill", (d) => colorScale(d.Continent))
-    .on("mouseover", (event, d) => {
-      if (!selectedContinent || d.Continent === selectedContinent) {
-        d3.select(event.currentTarget)
-          .transition()
-          .duration(200)
-          .attr("opacity", 1);
-        tooltip.transition().duration(300).style("opacity", 0.9);
-        tooltip
-          .html(
-            `<b>Country:</b> ${d.Country}  <br> <b>Instant Noodle Consumption:</b> $${d["2022_consumption"]} million <br> <b>Happiness Score:</b> ${d["happiness_score"]}`
-          )
-          .style("left", event.pageX + 20 + "px")
-          .style("top", event.pageY - 28 + "px");
-      }
-    })
-    .on("mouseout", (event, d) => {
-      if (!selectedContinent || d.Continent === selectedContinent) {
-        d3.select(event.currentTarget)
-          .transition()
-          .duration(300)
-          .attr("opacity", 0.6);
-        tooltip.transition().duration(500).style("opacity", 0);
-      }
-    });
-
   // Handle Zooming
   var chartZoom = d3.zoom().scaleExtent([0.5, 5]).on("zoom", chartZoomed);
   svg.call(chartZoom);
@@ -290,20 +253,76 @@ d3.csv("merged_scatterplot_data.csv", d3.autoType).then((data) => {
         .attr("r", 6 / currentZoomScale);
     });
 
-  // Highlight selected country from the world map
+  // Variable to keep track of the highlighted country
+  let highlightedCountry = null;
+
+  // Plot data points
+  let viewport = chartArea.append("g");
+  viewport
+    .selectAll("circle")
+    .data(data)
+    .join("circle")
+    .attr("class", "point")
+    .attr("cx", (d) => xScale(d["happiness_score"]))
+    .attr("cy", (d) => yScale(d["2022_consumption"]))
+    .attr("r", 6)
+    .attr("opacity", 0.6)
+    .style("fill", (d) => colorScale(d.Continent))
+    .on("mouseover", (event, d) => {
+      if (!selectedContinent || d.Continent === selectedContinent) {
+        // Check if a country is highlighted
+        if (highlightedCountry) {
+          d3.select(event.currentTarget)
+            .transition()
+            .duration(200)
+            .attr("opacity", 1);
+        }
+        tooltip.transition().duration(300).style("opacity", 0.9);
+        tooltip
+          .html(
+            `<b>Country:</b> ${d.Country}  <br> <b>Instant Noodle Consumption:</b> $${d["2022_consumption"]} million <br> <b>Happiness Score:</b> ${d["happiness_score"]}`
+          )
+          .style("left", event.pageX + 20 + "px")
+          .style("top", event.pageY - 28 + "px");
+      }
+    })
+    .on("mouseout", (event, d) => {
+      if (!selectedContinent || d.Continent === selectedContinent) {
+        // Only change opacity if no country is currently highlighted
+        if (!highlightedCountry) {
+          d3.select(event.currentTarget)
+            .transition()
+            .duration(300)
+            .attr("opacity", 0.6);
+        } else {
+          d3.select(event.currentTarget)
+            .transition()
+            .duration(300)
+            .attr("opacity", d.Country === highlightedCountry ? 1 : 0.07);
+        }
+        tooltip.transition().duration(500).style("opacity", 0);
+      }
+    });
+
+  // Adjust the highlighted country behavior
   document.addEventListener("highlightCountry", (e) => {
     const country = e.detail.country;
     const currentZoomScale = d3.zoomTransform(d3.select("#jade-svg").node()).k;
-    // Increase the radius of the corresponding circle by 5, taking zoom scale into account
+
+    // Set the highlighted country
+    highlightedCountry = country;
+
+    // Update opacity of all points based on highlighted country
     d3.selectAll(".point")
       .transition()
       .duration(300)
-      .attr("opacity", 0.07)
-      .attr("r", 6 / currentZoomScale) // Reset all points to default radius
-      .filter((d) => d.Country.toLowerCase() === country) // Select the matching country
-      .transition()
-      .duration(300)
-      .attr("opacity", 1)
-      .attr("r", 10 / currentZoomScale);
+      .attr("opacity", (d) =>
+        d.Country.toLowerCase().replace(/\s+/g, "") === country ? 1 : 0.07
+      )
+      .attr("r", (d) =>
+        d.Country.toLowerCase().replace(/\s+/g, "") === country
+          ? 10 / currentZoomScale
+          : 6 / currentZoomScale
+      );
   });
 });
