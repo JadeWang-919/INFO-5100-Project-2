@@ -30,9 +30,10 @@
 } */
 
 #country-filter {
-  margin-bottom: 10px;
   padding: 5px;
   font-size: 14px;
+  border: solid 2px rgba(0, 0, 0, 0.8);
+  border-radius: 4px;
 }
 
 .xuyuan-container {
@@ -64,7 +65,6 @@
   border-radius: 50%;
   display: inline-block;
 }
-
 
 .legend span {
   font-size: 14px;

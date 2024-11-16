@@ -57,10 +57,6 @@ svg {
   font-size: 12px;
 }
 
-#show-trend {
-  font-size: 10px;
-}
-
 .legend-button:hover {
   background-color: rgb(231, 231, 231);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
@@ -76,6 +72,10 @@ svg {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+#show-trend {
+  font-size: 10px;
 }
 
 .correlation-coefficient {
