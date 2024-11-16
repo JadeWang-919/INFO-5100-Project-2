@@ -47,7 +47,7 @@ function updateBarChart(country) {
   const svg = d3.select("#bar-chart");
   svg.selectAll("*").remove(); // Clear previous bars
 
-  const margin = { top: 20, right: 30, bottom: 40, left: 100 };
+  const margin = { top: 0, right: 5, bottom: 60, left: 60 };
   const width = +svg.attr("width") - margin.left - margin.right;
   const height = +svg.attr("height") - margin.top - margin.bottom;
 

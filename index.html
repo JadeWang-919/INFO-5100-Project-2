@@ -66,12 +66,30 @@
       </div>
 
       <div id="bar-chart-container">
-        <h3>Top Ramen Brands by Country</h3>
-        <select id="country-filter"></select>
+        <div class="xuyuan-container">
+          <h3>Top Ramen Brands by Country</h3>
+          <select id="country-filter"></select>
+        </div>
+      
+        <!-- Bar Chart SVG -->
+        <svg id="bar-chart" width="600" height="500"></svg>
 
-        <svg id="bar-chart" width="600" height="400"></svg>
+        <!-- Legend for Ratings -->
+        <div class="legend centered-legend">
+          <div>Ratings:</div>
+          <span>Low</span>
+          <div class="color-legend">
+            <div class="color-box" style="background-color: #eff3ff"></div>
+            <div class="color-box" style="background-color: #bdd7e7"></div>
+            <div class="color-box" style="background-color: #6baed6"></div>
+            <div class="color-box" style="background-color: #3182bd"></div>
+            <div class="color-box" style="background-color: #08519c"></div>
+          </div>
+          <span>High</span>
+        </div>        
       </div>
-    </div>
+      
+    
 
     <!-- 
     <div id="side-panel" style="display: none">

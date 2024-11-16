@@ -34,3 +34,39 @@
   padding: 5px;
   font-size: 14px;
 }
+
+.xuyuan-container {
+  display: flex;
+  align-items: center; /* Align items vertically centered */
+  justify-content: space-between; /* Space items out to opposite ends if needed */
+}
+
+/* Center the entire legend */
+.centered-legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Space between legend items */
+  margin: 10px 0;
+  text-align: center;
+}
+
+/* Align legend text and colors in one line */
+.color-legend {
+  display: flex;
+  gap: 5px; /* Space between the color circles */
+  align-items: center;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+
+.legend span {
+  font-size: 14px;
+  color: #333;
+}
